@@ -272,3 +272,30 @@ The following improvements are planned:
 * 🔄 Additional leaf dataset annotation in progress
 * ⏳ Flower disease dataset preparation pending
 * ⏳ Final hybrid model training pending
+
+---
+
+# Local Setup and Batch Prediction
+
+Run the following commands from the repository root. The project documents Python 3.9 as its baseline environment; use a compatible TensorFlow installation for your platform.
+
+```bash
+python -m venv .venv
+# Linux/macOS
+source .venv/bin/activate
+# Windows PowerShell (instead of the preceding activation command)
+# .\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python main.py
+```
+
+`main.py` reports the installed TensorFlow, NumPy, OpenCV and scikit-learn versions and lists available GPUs. It is an environment check, not the training entry point.
+
+## Running batch inference
+
+1. Ensure `models/` contains `svm_classifier.pkl`, `scaler.pkl` and `label_encoder.pkl` from the same training run. Only load trusted Joblib artifacts.
+2. Place input images directly in `data/dataset3/`. Supported extensions are `.jpg`, `.jpeg`, `.png` and `.bmp` (case-insensitive).
+3. Run `python predict.py` from the repository root. ResNet50 ImageNet weights may require a network connection on first use.
+4. Inspect `predictions.csv` for filenames, predicted labels and scores. Copies of input images are grouped by predicted class under `data/predicted/`.
+
+The CSV `score` is the maximum SVM decision-function output, not a calibrated probability or percentage confidence. Manually review predicted labels before using them as new training annotations. The script overwrites `predictions.csv` on each run and may leave files from earlier runs in the output directories; preserve previous results separately if needed.
